@@ -16,7 +16,7 @@ app.use(express.json());
 app.use('/api/posts', postsRouter);
 
 app.get('/', (req, res) => {
-  res.send('API Running');
+  res.send('API Running Ok');
 });
 
 const PORT = process.env.PORT || 8000;
