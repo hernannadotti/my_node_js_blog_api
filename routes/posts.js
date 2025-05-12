@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// @route   GET api/posts/:id
+// @route   GET api/posts/:slug
 // @desc    Get post by slug
 // @access  Public
 router.get('/:slug', async (req, res) => {
@@ -45,6 +45,41 @@ router.get('/:slug', async (req, res) => {
     console.error('[posts.js] Full error object:', err); // Log the full error object
     if (err.name === 'CastError' && err.path === '_id') {
        console.error('[posts.js] CRITICAL: Caught a CastError for _id. This is highly unexpected when querying by slug. Value that failed to cast:', err.value);
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET api/posts/detail/:slug
+// @desc    Get post by slug (alternative path)
+// @access  Public
+router.get('/detail/:slug', async (req, res) => {
+  try {
+    const slugParam = req.params.slug;
+    console.log(`[posts.js - /detail] Received request for slug: "${slugParam}"`);
+
+    if (typeof slugParam !== 'string' || slugParam.length === 0) {
+      console.error('[posts.js - /detail] Invalid slug parameter:', slugParam);
+      return res.status(400).json({ msg: 'Invalid slug format' });
+    }
+
+    const query = { slug: slugParam };
+    console.log('[posts.js - /detail] Querying Post model with:', JSON.stringify(query));
+    const post = await Post.findOne(query);
+
+    if (!post) {
+      console.log(`[posts.js - /detail] Post not found for slug: "${slugParam}"`);
+      return res.status(404).json({ msg: 'Post not found' });
+    }
+
+    console.log(`[posts.js - /detail] Post found for slug: "${slugParam}", ID: ${post._id}`);
+    res.json(post);
+
+  } catch (err) {
+    console.error(`[posts.js - /detail] Error fetching post for slug: "${req.params.slug}". Error: ${err.message}`);
+    console.error('[posts.js - /detail] Full error object:', err); // Log the full error object
+    if (err.name === 'CastError' && err.path === '_id') {
+       console.error('[posts.js - /detail] CRITICAL: Caught a CastError for _id. This is highly unexpected when querying by slug. Value that failed to cast:', err.value);
     }
     res.status(500).send('Server Error');
   }
