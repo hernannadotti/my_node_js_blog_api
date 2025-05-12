@@ -20,21 +20,32 @@ router.get('/', async (req, res) => {
 // @access  Public
 router.get('/:slug', async (req, res) => {
   try {
-    const post = await Post.findOne({ slug: req.params.slug });
+    const slugParam = req.params.slug;
+    console.log(`[posts.js] Received request for slug: "${slugParam}"`);
+
+    if (typeof slugParam !== 'string' || slugParam.length === 0) {
+      console.error('[posts.js] Invalid slug parameter:', slugParam);
+      return res.status(400).json({ msg: 'Invalid slug format' });
+    }
+
+    const query = { slug: slugParam };
+    console.log('[posts.js] Querying Post model with:', JSON.stringify(query));
+    const post = await Post.findOne(query);
 
     if (!post) {
+      console.log(`[posts.js] Post not found for slug: "${slugParam}"`);
       return res.status(404).json({ msg: 'Post not found' });
     }
 
-   res.json(post);
+    console.log(`[posts.js] Post found for slug: "${slugParam}", ID: ${post._id}`);
+    res.json(post);
 
-  }
-  catch (err) {
-    console.error(err.message);
-    // We are searching by slug, so ObjectId check is not relevant here
-    // if (err.kind === 'ObjectId') {
-    //   return res.status(404).json({ msg: 'Post not found' });
-    // }
+  } catch (err) {
+    console.error(`[posts.js] Error fetching post for slug: "${req.params.slug}". Error: ${err.message}`);
+    console.error('[posts.js] Full error object:', err); // Log the full error object
+    if (err.name === 'CastError' && err.path === '_id') {
+       console.error('[posts.js] CRITICAL: Caught a CastError for _id. This is highly unexpected when querying by slug. Value that failed to cast:', err.value);
+    }
     res.status(500).send('Server Error');
   }
 });
