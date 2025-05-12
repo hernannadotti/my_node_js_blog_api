@@ -6,7 +6,7 @@ const connectDB = async () => {
     // Vercel sets NODE_ENV to 'production' automatically.
     // For local, dotenv loads .env. For Vercel, use Vercel's env vars.
     const mongoURI = process.env.NODE_ENV === 'production' 
-      ? process.env.MONGODB_URI // Use MONGODB_URI in production (Vercel)
+      ? process.env.MONGO_URI // Use MONGODB_URI in production (Vercel)
       : process.env.MONGO_URI;  // Use MONGO_URI locally (from .env)
 
     if (!mongoURI) {
