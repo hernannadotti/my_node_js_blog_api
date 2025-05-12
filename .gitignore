@@ -1,1 +1,7 @@
 .vercel
+.env
+
+./node_modules
+/.vercelignore
+/.vercel
+/.vercel/project.json
