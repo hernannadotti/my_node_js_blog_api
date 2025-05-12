@@ -16,11 +16,11 @@ router.get('/', async (req, res) => {
 });
 
 // @route   GET api/posts/:id
-// @desc    Get post by ID
+// @desc    Get post by slug
 // @access  Public
 router.get('/:slug', async (req, res) => {
   try {
-    const post = await Post.findById(req.params.slug);
+    const post = await Post.findOne({ slug: req.params.slug });
 
     if (!post) {
       return res.status(404).json({ msg: 'Post not found' });
@@ -31,9 +31,10 @@ router.get('/:slug', async (req, res) => {
   }
   catch (err) {
     console.error(err.message);
-    if (err.kind === 'ObjectId') {
-      return res.status(404).json({ msg: 'Post not found' });
-    }
+    // We are searching by slug, so ObjectId check is not relevant here
+    // if (err.kind === 'ObjectId') {
+    //   return res.status(404).json({ msg: 'Post not found' });
+    // }
     res.status(500).send('Server Error');
   }
 });
