@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Define Routes
-app.use('/api/posts', postsRouter);
+app.use('/blog', postsRouter);
 
 app.get('/', (req, res) => {
   res.send('API Running ok');
