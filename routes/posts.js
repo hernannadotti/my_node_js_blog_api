@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
 
-// @route   GET api/posts
+// @route   GET blog
 // @desc    Get all posts
 // @access  Public
 router.get('/', async (req, res) => {
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// @route   GET api/posts/:slug
+// @route   GET blog/:slug
 // @desc    Get post by slug
 // @access  Public
 router.get('/:slug', async (req, res) => {
